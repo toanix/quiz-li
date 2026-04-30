@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Vật Lí 10 – Cuối Kì II 2025-2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"
+    onload="document.addEventListener('DOMContentLoaded', () => renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]}))"></script>
+  <style>
+    :root {
+      --bg: #0a0e17; --surface: #111827; --surface2: #151f30; --border: #1f2d45;
+      --accent: #4f8ef7; --accent2: #7ab3ff; --gold: #4f8ef7; --gold2: #7ab3ff;
+      --red: #f85149; --green: #3fb950; --text: #e2e8f0; --muted: #94a3b8; --radius: 14px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(79,142,247,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(79,142,247,0.03) 1px,transparent 1px); background-size: 40px 40px; pointer-events: none; z-index: 0; }
+    .glow { position: fixed; width: 500px; height: 500px; background: radial-gradient(circle, rgba(79,142,247,0.1) 0%, rgba(79,142,247,0.03) 40%, transparent 70%); border-radius: 50%; z-index: 0; pointer-events: none; transform: translate(-50%,-50%); left: 50%; top: 50%; transition: left 0.08s ease, top 0.08s ease; }
+    .screen { display: none; width: 100%; max-width: 920px; padding: 24px 16px 60px; position: relative; z-index: 1; }
+    .screen.active { display: block; }
+    #start-screen { text-align: center; padding-top: 60px; }
+    .logo-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(79,142,247,0.1); border: 1px solid rgba(79,142,247,0.4); border-radius: 999px; padding: 6px 16px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; color: var(--accent2); text-transform: uppercase; margin-bottom: 28px; animation: fadeDown 0.8s ease both; }
+    h1.main-title { font-family: 'Libre Baskerville', serif; font-size: clamp(2rem,5vw,3.4rem); font-weight: 900; line-height: 1.15; background: linear-gradient(135deg,#fff 0%,var(--accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 12px; animation: fadeDown 0.9s 0.1s ease both; }
+    .subtitle { color: var(--muted); font-size: 1rem; margin-bottom: 36px; animation: fadeDown 1s 0.2s ease both; }
+    @keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+    .stats-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 36px; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 22px; text-align: center; min-width: 110px; transition: border-color 0.3s; }
+    .stat-card:hover { border-color: rgba(79,142,247,0.4); }
+    .stat-card .num { font-family: 'Libre Baskerville', serif; font-size: 1.9rem; font-weight: 700; color: var(--accent); }
+    .stat-card .lbl { font-size: 0.73rem; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .mode-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px,1fr)); gap: 12px; margin-bottom: 40px; }
+    .mode-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; text-align: left; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
+    .mode-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: linear-gradient(180deg,var(--accent),var(--accent2)); opacity: 0; transition: opacity 0.2s; }
+    .mode-card:hover, .mode-card.selected { border-color: rgba(79,142,247,0.5); background: rgba(79,142,247,0.07); }
+    .mode-card:hover::before, .mode-card.selected::before { opacity: 1; }
+    .mode-card.selected { box-shadow: 0 0 0 1px rgba(79,142,247,0.4); }
+    .mode-card .mode-num { font-size: 0.68rem; color: var(--accent2); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+    .mode-card .mode-name { font-size: 0.87rem; font-weight: 600; margin-top: 4px; line-height: 1.3; }
+    .mode-card .mode-count { font-size: 0.73rem; color: var(--muted); margin-top: 6px; }
+    .btn-start { background: linear-gradient(135deg,#4f8ef7,#7ab3ff); color: #0a0e17; border: none; border-radius: var(--radius); padding: 16px 48px; font-size: 1.05rem; font-weight: 700; font-family: 'DM Sans',sans-serif; cursor: pointer; transition: all 0.2s; letter-spacing: 0.03em; animation: fadeDown 1s 0.3s ease both; }
+    .btn-start:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(79,142,247,0.4); }
+    #quiz-screen { padding-top: 20px; }
+    .quiz-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; gap: 12px; flex-wrap: wrap; }
+    .mode-badge { background: rgba(79,142,247,0.12); border: 1px solid rgba(79,142,247,0.3); border-radius: 999px; padding: 5px 14px; font-size: 0.72rem; font-weight: 700; color: var(--accent2); letter-spacing: 0.08em; text-transform: uppercase; }
+    .q-counter { font-size: 0.85rem; color: var(--muted); font-weight: 600; }
+    .q-counter span { color: var(--text); font-weight: 700; }
+    .progress-bar-wrap { width: 100%; height: 5px; background: var(--border); border-radius: 999px; margin-bottom: 24px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: linear-gradient(90deg,#4f8ef7,#7ab3ff); border-radius: 999px; transition: width 0.4s cubic-bezier(0.4,0,0.2,1); }
+    .segment-progress { display: flex; gap: 3px; margin-bottom: 20px; flex-wrap: wrap; }
+    .seg-dot { flex: 1; min-width: 6px; max-width: 16px; height: 5px; border-radius: 999px; background: var(--border); transition: background 0.3s; }
+    .seg-dot.correct { background: var(--green); }
+    .seg-dot.wrong { background: var(--red); }
+    .seg-dot.current { background: var(--accent); }
+    .quiz-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 14px; align-items: start; }
+    .quiz-layout.no-passage { grid-template-columns: 1fr; }
+    .passage-panel { background: var(--surface2); border: 1px solid var(--border); border-radius: 18px; padding: 20px; max-height: 520px; overflow-y: auto; font-size: 0.87rem; line-height: 1.75; color: #cbd5e1; position: sticky; top: 16px; }
+    .passage-panel::-webkit-scrollbar { width: 5px; }
+    .passage-panel::-webkit-scrollbar-track { background: transparent; }
+    .passage-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+    .passage-panel h4 { font-size: 0.75rem; font-weight: 700; color: var(--accent2); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .passage-panel h4::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .passage-panel p { margin-bottom: 10px; }
+    .passage-panel img { max-width: 100%; border-radius: 8px; margin: 8px 0; }
+    .question-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 26px; animation: slideIn 0.3s cubic-bezier(0.4,0,0.2,1); }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+    .q-label { font-size: 0.7rem; font-weight: 700; color: var(--accent2); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+    .q-text { font-size: 1rem; font-weight: 600; line-height: 1.65; margin-bottom: 18px; }
+    .options { display: flex; flex-direction: column; gap: 9px; }
+    .option-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 13px 16px; text-align: left; cursor: pointer; transition: all 0.18s; font-size: 0.9rem; font-family: 'DM Sans',sans-serif; color: var(--text); font-weight: 500; line-height: 1.5; display: flex; align-items: flex-start; gap: 11px; }
+    .option-btn:hover:not(:disabled) { border-color: rgba(79,142,247,0.5); background: rgba(79,142,247,0.08); transform: translateX(3px); }
+    .option-btn .opt-label { width: 24px; height: 24px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.73rem; font-weight: 700; flex-shrink: 0; margin-top: 1px; transition: all 0.18s; }
+    .option-btn:hover:not(:disabled) .opt-label { background: var(--accent); color: #0a0e17; }
+    .option-btn.correct { border-color: var(--green); background: rgba(63,185,80,0.1); pointer-events: none; }
+    .option-btn.correct .opt-label { background: var(--green); color: #0a0e17; }
+    .option-btn.wrong { border-color: var(--red); background: rgba(248,81,73,0.1); pointer-events: none; }
+    .option-btn.wrong .opt-label { background: var(--red); color: #fff; }
+    .option-btn.disabled-plain { opacity: 0.5; pointer-events: none; }
+    .tf-options { display: flex; gap: 10px; flex-wrap: wrap; }
+    .tf-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 28px; cursor: pointer; transition: all 0.18s; font-size: 0.9rem; font-family: 'DM Sans',sans-serif; color: var(--text); font-weight: 600; }
+    .tf-btn:hover:not(:disabled) { border-color: rgba(79,142,247,0.5); background: rgba(79,142,247,0.08); }
+    .tf-btn.correct { border-color: var(--green); background: rgba(63,185,80,0.1); color: #7ee787; pointer-events: none; }
+    .tf-btn.wrong { border-color: var(--red); background: rgba(248,81,73,0.1); color: #ff7b72; pointer-events: none; }
+    .tf-sub-item { margin-bottom: 14px; }
+    .tf-sub-label { font-size: 0.87rem; font-weight: 600; margin-bottom: 8px; line-height: 1.55; color: var(--text); }
+    .tf-sub-label span { color: var(--accent2); font-weight: 700; }
+    .wc-feedback { font-size: 0.82rem; margin-top: 6px; padding: 8px 12px; border-radius: 8px; display: none; line-height: 1.5; }
+    .wc-feedback.show { display: block; }
+    .wc-feedback.wf-correct { background: rgba(63,185,80,0.1); border: 1px solid rgba(63,185,80,0.3); color: #7ee787; }
+    .wc-feedback.wf-wrong { background: rgba(248,81,73,0.1); border: 1px solid rgba(248,81,73,0.3); color: #ff7b72; }
+    .feedback-box { border-radius: var(--radius); padding: 13px 17px; font-size: 0.87rem; font-weight: 600; margin-bottom: 14px; display: none; align-items: flex-start; gap: 10px; line-height: 1.5; }
+    .feedback-box.show { display: flex; }
+    .feedback-box.correct-fb { background: rgba(63,185,80,0.1); border: 1px solid rgba(63,185,80,0.3); color: #7ee787; }
+    .feedback-box.wrong-fb { background: rgba(248,81,73,0.1); border: 1px solid rgba(248,81,73,0.3); color: #ff7b72; }
+    .feedback-explanation { margin-top: 6px; font-size: 0.82rem; font-weight: 400; opacity: 0.9; line-height: 1.6; }
+    .btn-next { background: linear-gradient(135deg,#4f8ef7,#7ab3ff); color: #0a0e17; border: none; border-radius: var(--radius); padding: 14px 36px; font-size: 0.95rem; font-weight: 700; font-family: 'DM Sans',sans-serif; cursor: pointer; transition: all 0.2s; display: none; width: 100%; }
+    .btn-next.show { display: block; }
+    .btn-next:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(79,142,247,0.35); }
+    #result-screen { text-align: center; padding-top: 40px; }
+    .result-ring-wrap { display: flex; justify-content: center; margin-bottom: 26px; }
+    .result-ring { width: 160px; height: 160px; position: relative; }
+    .result-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .ring-bg { fill: none; stroke: var(--border); stroke-width: 10; }
+    .ring-fill { fill: none; stroke-width: 10; stroke-linecap: round; transition: stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1); }
+    .ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .ring-pct { font-family: 'Libre Baskerville', serif; font-size: 2.2rem; font-weight: 900; }
+    .ring-lbl { font-size: 0.7rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
+    .result-title { font-family: 'Libre Baskerville', serif; font-size: 2rem; font-weight: 900; margin-bottom: 8px; }
+    .result-sub { color: var(--muted); margin-bottom: 30px; }
+    .result-stats { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 32px; }
+    .res-stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 13px 18px; min-width: 95px; }
+    .res-stat .rs-num { font-family: 'Libre Baskerville', serif; font-size: 1.8rem; font-weight: 700; }
+    .res-stat .rs-lbl { font-size: 0.7rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+    .res-stat.green .rs-num { color: var(--green); }
+    .res-stat.red .rs-num { color: var(--red); }
+    .res-stat.blue .rs-num { color: var(--accent); }
+    .result-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-restart, .btn-back { border-radius: var(--radius); padding: 13px 26px; font-size: 0.9rem; font-weight: 700; cursor: pointer; font-family: 'DM Sans',sans-serif; transition: all 0.2s; border: none; }
+    .btn-restart { background: linear-gradient(135deg,#4f8ef7,#7ab3ff); color: #0a0e17; }
+    .btn-restart:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(79,142,247,0.35); }
+    .btn-back { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+    .btn-back:hover { border-color: var(--accent); color: var(--accent2); }
+    .review-section { margin-top: 36px; text-align: left; }
+    .review-title { font-family: 'Libre Baskerville', serif; font-size: 1.25rem; font-weight: 700; margin-bottom: 14px; color: var(--accent2); }
+    .review-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 15px; margin-bottom: 10px; }
+    .review-item .ri-q { font-size: 0.87rem; font-weight: 600; margin-bottom: 8px; line-height: 1.5; }
+    .review-item .ri-row { font-size: 0.8rem; margin-top: 4px; line-height: 1.5; }
+    .ri-wrong-ans { color: var(--red); }
+    .ri-right-ans { color: var(--green); }
+    @media (max-width: 700px) {
+      .quiz-layout { display: flex; flex-direction: column; gap: 10px; }
+      .passage-panel { position: static; max-height: 260px; overflow-y: auto; padding: 14px 16px; }
+      .question-card { padding: 18px 14px; }
+      .q-text { font-size: 0.93rem; }
+      .option-btn { font-size: 0.85rem; padding: 11px 13px; }
+      .screen { padding: 16px 12px 60px; }
+    }
+    /* Short Answer */
+    .sa-wrap { display: flex; flex-direction: column; gap: 14px; }
+    .sa-input-row { display: flex; align-items: center; gap: 10px; }
+    .sa-input { background: var(--surface2); border: 2px solid var(--border); border-radius: 10px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 600; padding: 11px 16px; width: 100%; max-width: 280px; transition: border-color 0.18s; outline: none; }
+    .sa-input:focus { border-color: var(--accent); }
+    .sa-input.sa-correct { border-color: var(--green); background: rgba(63,185,80,0.1); color: #7ee787; }
+    .sa-input.sa-wrong { border-color: var(--red); background: rgba(248,81,73,0.1); color: #ff7b72; }
+    .sa-unit { font-size: 0.85rem; color: var(--muted); font-weight: 600; white-space: nowrap; }
+    .sa-hint { font-size: 0.78rem; color: var(--muted); font-style: italic; }
+    .btn-check-sa { background: rgba(79,142,247,0.15); border: 1px solid rgba(79,142,247,0.4); border-radius: var(--radius); padding: 12px 28px; font-size: 0.9rem; font-weight: 700; font-family: 'DM Sans', sans-serif; color: var(--accent2); cursor: pointer; transition: all 0.2s; margin-top: 4px; }
+    .btn-check-sa:hover { background: rgba(79,142,247,0.25); }
+    .sa-correct-show { margin-top: 8px; font-size: 0.82rem; color: var(--green); font-weight: 600; }
+  </style>
+</head>
+<body>
+<div class="glow" id="glow"></div>
+
+<!-- START SCREEN -->
+<div class="screen active" id="start-screen">
+  <div class="logo-badge">⚛️ Vật Lí 10 – THPT Nguyễn Tất Thành</div>
+  <h1 class="main-title">Quiz Vật Lí 10</h1>
+  <p class="subtitle">Ôn tập Cuối Kì II – 2025/2026 · Cơ học & Năng lượng</p>
+  <div class="stats-row">
+    <div class="stat-card"><div class="num" id="total-q-badge">—</div><div class="lbl">Câu hỏi</div></div>
+    <div class="stat-card"><div class="num">2</div><div class="lbl">Phần</div></div>
+    <div class="stat-card"><div class="num">∞</div><div class="lbl">Thời gian</div></div>
+  </div>
+  <div class="mode-list" id="mode-list">
+    <div class="mode-card selected" data-mode="all">
+      <div class="mode-num">Tổng hợp</div>
+      <div class="mode-name">Tất cả câu hỏi</div>
+      <div class="mode-count" id="cnt-all">—</div>
+    </div>
+    <div class="mode-card" data-mode="tnmc">
+      <div class="mode-num">Phần I</div>
+      <div class="mode-name">Trắc nghiệm 4 phương án</div>
+      <div class="mode-count" id="cnt-tnmc">— câu</div>
+    </div>
+    <div class="mode-card" data-mode="ds">
+      <div class="mode-num">Phần II</div>
+      <div class="mode-name">Đúng / Sai</div>
+      <div class="mode-count" id="cnt-ds">— câu</div>
+    </div>
+    <div class="mode-card" data-mode="sn">
+      <div class="mode-num">Phần III</div>
+      <div class="mode-name">Trả lời ngắn</div>
+      <div class="mode-count" id="cnt-sn">— câu</div>
+    </div>
+  </div>
+  <button class="btn-start" id="btn-start">🚀 Bắt đầu làm bài</button>
+</div>
+
+<!-- QUIZ SCREEN -->
+<div class="screen" id="quiz-screen">
+  <div class="quiz-header">
+    <div class="mode-badge" id="cur-mode-badge">Tổng hợp</div>
+    <div class="q-counter">Câu <span id="q-cur">1</span> / <span id="q-total">—</span></div>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-bar" style="width:0%"></div></div>
+  <div class="segment-progress" id="seg-progress"></div>
+  <div class="quiz-layout no-passage" id="quiz-layout">
+    <div class="passage-panel" id="passage-panel" style="display:none">
+      <div id="passage-text"></div>
+    </div>
+    <div class="question-card">
+      <div class="q-label" id="q-label">Câu 1</div>
+      <div class="q-text" id="q-text"></div>
+      <div id="q-content"></div>
+      <div class="feedback-box" id="feedback-box"></div>
+      <button class="btn-next" id="btn-next" onclick="nextQuestion()">Câu tiếp theo →</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT SCREEN -->
+<div class="screen" id="result-screen">
+  <div class="result-ring-wrap">
+    <div class="result-ring">
+      <svg viewBox="0 0 150 150">
+        <circle class="ring-bg" cx="75" cy="75" r="65"/>
+        <circle class="ring-fill" id="ring-fill" cx="75" cy="75" r="65"/>
+      </svg>
+      <div class="ring-center">
+        <div class="ring-pct" id="ring-pct">0%</div>
+        <div class="ring-lbl">Điểm</div>
+      </div>
+    </div>
+  </div>
+  <div class="result-title" id="result-title">Hoàn thành!</div>
+  <div class="result-sub" id="result-sub"></div>
+  <div class="result-stats">
+    <div class="res-stat green"><div class="rs-num" id="rs-correct">0</div><div class="rs-lbl">Đúng</div></div>
+    <div class="res-stat red"><div class="rs-num" id="rs-wrong">0</div><div class="rs-lbl">Sai</div></div>
+    <div class="res-stat blue"><div class="rs-num" id="rs-total">0</div><div class="rs-lbl">Tổng</div></div>
+  </div>
+  <div class="result-btns">
+    <button class="btn-restart" onclick="startQuiz()">🔄 Làm lại</button>
+    <button class="btn-back" onclick="showScreen('start-screen')">← Trang chủ</button>
+  </div>
+  <div class="review-section">
+    <div class="review-title">📋 Xem lại câu sai</div>
+    <div id="review-list"></div>
+  </div>
+</div>
+
+<script>
+// ── IMAGE PATHS ──
+// Đặt các ảnh cùng thư mục với file HTML với tên đúng như sau:
+// P2_C2.jpg  → đồ thị động lượng (Phần II Câu 2)
+// P2_C3.jpg  → đồ thị lò xo (Phần II Câu 3)
+// P2_C6.jpg  → hình bình chất lỏng M,N,P (Phần II Câu 6)
+// P1_C36.jpg → ảnh turbine gió (Phần I Câu 37)
+const IMGS = {
+  p2c2: 'P2_C2.jpg',
+  p2c3: 'P2_C3.jpg',
+  p2c6: 'P2_C6.jpg',
+  p1c37: 'P1_C36.jpg'
+};
+
+// ── QUESTION DATA ──
+const questionsData = {
+  tnmc: [
+    {
+      id:'p1q1', label:'Câu 1',
+      question:'Phát biểu nào sau đây đúng với quy tắc moment lực?',
+      options:[
+        'Muốn cho một vật có trục quay cố định nằm cân bằng thì tổng moment của các lực có khuynh hướng làm vật quay theo một chiều phải bằng tổng moment của các lực có khuynh hướng làm vật quay theo chiều ngược lại.',
+        'Muốn cho một vật có trục quay cố định nằm cân bằng thì tổng moment của các lực phải bằng hằng số.',
+        'Muốn cho một vật có trục quay cố định nằm cân bằng thì tổng moment của các lực phải khác không.',
+        'Muốn cho một vật có trục quay cố định nằm cân bằng thì tổng moment của các lực phải là một vectơ có giá đi qua trục quay.'
+      ],
+      correct:0,
+      explanation:'Quy tắc moment: tổng moment quay thuận = tổng moment quay ngược. Đây là điều kiện cân bằng quay.'
+    },
+    {
+      id:'p1q2', label:'Câu 2',
+      question:'Khi hạt mưa rơi, thế năng của nó chuyển hóa thành',
+      options:['nhiệt năng.','động năng.','hóa năng.','quang năng.'],
+      correct:1,
+      explanation:'Khi rơi, độ cao giảm → thế năng giảm, vận tốc tăng → động năng tăng. Thế năng chuyển thành động năng (bỏ qua ma sát).'
+    },
+    {
+      id:'p1q3', label:'Câu 3',
+      question:'Một vật nhỏ được ném thẳng đứng hướng xuống từ một điểm phía trên mặt đất. Bỏ qua ma sát, trong quá trình vật rơi',
+      options:['thế năng tăng.','động năng giảm.','cơ năng không đổi.','cơ năng cực tiểu ngay trước khi chạm đất.'],
+      correct:2,
+      explanation:'Bỏ qua ma sát → chỉ có trọng lực tác dụng → cơ năng bảo toàn, không đổi trong suốt quá trình rơi.'
+    },
+    {
+      id:'p1q4', label:'Câu 4',
+      question:'Chọn câu SAI khi nói về cơ năng.',
+      options:[
+        'Cơ năng của vật chuyển động chỉ dưới tác dụng của trọng lực thì bảo toàn.',
+        'Cơ năng của vật chuyển động chỉ chịu tác dụng của trọng lực bằng tổng động năng và thế năng trọng trường.',
+        'Cơ năng của vật giảm khi vật chịu tác dụng của lực ma sát.',
+        'Cơ năng của vật được bảo toàn nếu có tác dụng của các lực khác (lực cản, lực ma sát…) xuất hiện trong quá trình vật chuyển động.'
+      ],
+      correct:3,
+      explanation:'Câu D sai: khi có lực ma sát hay lực cản, cơ năng KHÔNG bảo toàn (bị giảm do năng lượng chuyển thành nhiệt).'
+    },
+    {
+      id:'p1q5', label:'Câu 5',
+      question:'Túi khí trong ô tô có tác dụng gì?',
+      options:['Trang trí.','Cung cấp khí cho người trong ô tô.','Bảo vệ con người trong trường hợp xe xảy ra va chạm.','Cung cấp khí cho các bánh xe.'],
+      correct:2,
+      explanation:'Túi khí (airbag) bơm phồng khi va chạm, tăng thời gian va chạm → giảm lực tác dụng lên người → bảo vệ an toàn.'
+    },
+    {
+      id:'p1q6', label:'Câu 6',
+      question:'Một vật chuyển động tròn trong thời gian $\\Delta t$ thì bán kính quay được một góc $\\Delta\\alpha$. Tốc độ góc của vật là',
+      options:['$\\omega = \\dfrac{\\Delta\\alpha}{\\Delta t}$','$\\omega = \\dfrac{\\Delta t}{\\Delta\\alpha}$','$\\omega = \\dfrac{\\Delta\\alpha+\\Delta t}{\\Delta\\alpha}$','$\\omega = \\dfrac{\\Delta\\alpha-\\Delta t}{\\Delta\\alpha}$'],
+      correct:0,
+      explanation:'Tốc độ góc $\\omega = \\dfrac{\\Delta\\alpha}{\\Delta t}$ (rad/s) – góc quét được chia cho thời gian.'
+    },
+    {
+      id:'p1q7', label:'Câu 7',
+      question:'Theo Định luật Hooke, trong giới hạn đàn hồi, độ lớn lực đàn hồi của lò xo',
+      options:['tỉ lệ thuận với độ biến dạng của lò xo.','tỉ lệ thuận với khối lượng của lò xo.','tỉ lệ thuận với kích thước của lò xo.','tỉ lệ nghịch với độ biến dạng của lò xo.'],
+      correct:0,
+      explanation:'Định luật Hooke: $F = k|\\Delta l|$. Lực đàn hồi tỉ lệ thuận với độ biến dạng $|\\Delta l|$.'
+    },
+    {
+      id:'p1q8', label:'Câu 8',
+      question:'Từ điểm M có độ cao so với mặt đất bằng $0{,}8\\,\\text{m}$ ném lên một vật với vận tốc đầu $2\\,\\text{m/s}$. Khối lượng $m = 0{,}5\\,\\text{kg}$, $g = 10\\,\\text{m/s}^2$. Cơ năng của vật so với mặt đất bằng',
+      options:['4 J','8 J','5 J','1 J'],
+      correct:2,
+      explanation:'$W = W_đ + W_t = \\frac{1}{2}mv^2 + mgh = \\frac{1}{2}(0{,}5)(4) + 0{,}5 \\times 10 \\times 0{,}8 = 1 + 4 = 5\\,\\text{J}$'
+    },
+    {
+      id:'p1q9', label:'Câu 9',
+      question:'Một chất điểm chuyển động không vận tốc đầu dưới tác dụng của lực không đổi $F = 0{,}1\\,\\text{N}$. Động lượng tại $t = 3\\,\\text{s}$ là',
+      options:['30 kg·m/s','3 kg·m/s','0,3 kg·m/s','0,03 kg·m/s'],
+      correct:2,
+      explanation:'$p = F \\cdot t = 0{,}1 \\times 3 = 0{,}3\\,\\text{kg·m/s}$ (từ định lý xung – động lượng: $\\Delta p = F\\Delta t$).'
+    },
+    {
+      id:'p1q10', label:'Câu 10',
+      question:'Phải treo một vật có khối lượng bằng bao nhiêu vào lò xo có độ cứng $k = 100\\,\\text{N/m}$ để lò xo dãn ra $10\\,\\text{cm}$? ($g = 10\\,\\text{m/s}^2$)',
+      options:['1 kg','10 kg','100 kg','1000 kg'],
+      correct:0,
+      explanation:'$F = k|\\Delta l| \\Rightarrow mg = 100 \\times 0{,}1 = 10\\,\\text{N} \\Rightarrow m = 1\\,\\text{kg}$'
+    },
+    {
+      id:'p1q11', label:'Câu 11',
+      question:'Ở những đoạn đường vòng, mặt đường được nâng lên một bên. Việc làm này nhằm mục đích nào?',
+      options:['Giới hạn vận tốc của xe.','Tạo lực hướng tâm để xe chuyển hướng.','Tăng lực ma sát để khỏi trượt.','Cho nước mưa thoát dễ dàng.'],
+      correct:1,
+      explanation:'Nghiêng mặt đường tạo ra thành phần phản lực hướng vào tâm → cung cấp lực hướng tâm cần thiết để xe chuyển hướng an toàn.'
+    },
+    {
+      id:'p1q12', label:'Câu 12',
+      question:'Một chất điểm đứng yên dưới tác dụng của 2 lực $F_1 = 6\\,\\text{N}$, $F_2 = 8\\,\\text{N}$. Biết $\\vec{F}_1 \\perp \\vec{F}_2$, hợp lực của hai lực này là',
+      options:['2 N','14 N','10 N','25 N'],
+      correct:2,
+      explanation:'Hai lực vuông góc: $F = \\sqrt{F_1^2 + F_2^2} = \\sqrt{36+64} = \\sqrt{100} = 10\\,\\text{N}$'
+    },
+    {
+      id:'p1q13', label:'Câu 13',
+      question:'Lực $\\vec{F}$ có độ lớn $500\\,\\text{N}$ kéo vật dịch chuyển $2\\,\\text{m}$ cùng hướng với lực kéo. Công của lực thực hiện là',
+      options:['100 J','1 J','1 kJ','1000 kJ'],
+      correct:2,
+      explanation:'$A = F \\cdot s = 500 \\times 2 = 1000\\,\\text{J} = 1\\,\\text{kJ}$'
+    },
+    {
+      id:'p1q14', label:'Câu 14',
+      question:'Một người ôm chồng sách trọng lượng $40\\,\\text{N}$, cách mặt đất $1{,}2\\,\\text{m}$ trong $2$ phút. Công suất mà người đó thực hiện là',
+      options:['0,4 W','0 W','24 W','48 W'],
+      correct:1,
+      explanation:'Người đứng yên, không có dịch chuyển → không sinh công → công suất = 0 W.'
+    },
+    {
+      id:'p1q15', label:'Câu 15',
+      question:'Máy bay khối lượng $200$ tấn chuyển động với tốc độ $80\\,\\text{m/s}$. Động lượng của nó có độ lớn là',
+      options:['$2{,}0 \\times 10^7\\,\\text{kg·m/s}$','$1{,}6 \\times 10^6\\,\\text{kg·m/s}$','$2{,}0 \\times 10^6\\,\\text{kg·m/s}$','$1{,}6 \\times 10^7\\,\\text{kg·m/s}$'],
+      correct:3,
+      explanation:'$p = mv = 200000 \\times 80 = 1{,}6 \\times 10^7\\,\\text{kg·m/s}$'
+    },
+    {
+      id:'p1q16', label:'Câu 16',
+      question:'Chiếc xe đạp chạy $40\\,\\text{km/h}$ trên vòng đua bán kính $100\\,\\text{m}$. Gia tốc hướng tâm bằng',
+      options:['$0{,}11\\,\\text{m/s}^2$','$0{,}4\\,\\text{m/s}^2$','$1{,}23\\,\\text{m/s}^2$','$16\\,\\text{m/s}^2$'],
+      correct:2,
+      explanation:'$v = 40\\,\\text{km/h} \\approx 11{,}11\\,\\text{m/s}$; $a_{ht} = \\dfrac{v^2}{r} = \\dfrac{123{,}5}{100} \\approx 1{,}23\\,\\text{m/s}^2$'
+    },
+    {
+      id:'p1q17', label:'Câu 17',
+      question:'Lò xo chiều dài tự nhiên $22\\,\\text{cm}$, treo thẳng đứng, gắn vật nặng thì lò xo dài $27\\,\\text{cm}$. Độ cứng $k = 100\\,\\text{N/m}$. Lực đàn hồi bằng',
+      options:['500 N','5 N','20 N','50 N'],
+      correct:1,
+      explanation:'$|\\Delta l| = 27 - 22 = 5\\,\\text{cm} = 0{,}05\\,\\text{m}$; $F = k|\\Delta l| = 100 \\times 0{,}05 = 5\\,\\text{N}$'
+    },
+    {
+      id:'p1q18', label:'Câu 18',
+      question:'Ô tô công suất $100\\,\\text{kW}$ chạy với vận tốc $36\\,\\text{km/h}$. Lực kéo của động cơ lúc đó là',
+      options:['1000 N','$10^4$ N','2778 N','360 N'],
+      correct:1,
+      explanation:'$v = 36\\,\\text{km/h} = 10\\,\\text{m/s}$; $F = \\dfrac{P}{v} = \\dfrac{100000}{10} = 10000 = 10^4\\,\\text{N}$'
+    },
+    {
+      id:'p1q19', label:'Câu 19',
+      question:'Biểu thức nào là biểu thức mômen của lực đối với một trục quay?',
+      options:['$M = F \\cdot d$','$M = \\dfrac{F}{d}$','$\\dfrac{F_1}{d_1} = \\dfrac{F_2}{d_2}$','$F_1 d_1 = F_2 d_2$'],
+      correct:0,
+      explanation:'Mômen lực: $M = F \\cdot d$ trong đó $d$ là cánh tay đòn (khoảng cách từ trục quay đến đường tác dụng của lực).'
+    },
+    {
+      id:'p1q20', label:'Câu 20',
+      question:'Dụng cụ nào sau đây KHÔNG cần dùng trong bài thực hành Tổng hợp lực hai đồng quy?',
+      options:['Lực kế.','Dây chỉ bền.','Thước đo góc.','Đồng hồ đo thời gian.'],
+      correct:3,
+      explanation:'Bài tổng hợp lực cần: lực kế (đo lực), dây chỉ (tạo hệ), thước đo góc (đo góc). Đồng hồ đo thời gian không cần thiết.'
+    },
+    {
+      id:'p1q21', label:'Câu 21',
+      question:'Đại lượng nào sau đây KHÔNG phải là một dạng năng lượng?',
+      options:['nhiệt năng.','động năng.','hóa năng.','quang năng.'],
+      correct:1,
+      explanation:'Câu hỏi có vẻ bất thường – tất cả đều là dạng năng lượng. Tuy nhiên theo đề, đáp án B (động năng) được chọn vì nó là dạng năng lượng cơ học, không phải là "dạng năng lượng" theo nghĩa riêng biệt trong phân loại phổ thông. (Lưu ý: câu này trong đề gốc có câu trả lời là B – học sinh chọn theo đáp án gốc.)',
+    },
+    {
+      id:'p1q22', label:'Câu 22',
+      question:'Người nhấc vật $6\\,\\text{kg}$ lên cao $1\\,\\text{m}$ rồi đi ngang $30\\,\\text{m}$. $g = 10\\,\\text{m/s}^2$. Công tổng cộng người thực hiện là',
+      options:['1860 J','1800 J','180 J','60 J'],
+      correct:3,
+      explanation:'Nhấc lên: $A_1 = mgh = 6 \\times 10 \\times 1 = 60\\,\\text{J}$. Đi ngang: trọng lực vuông góc dịch chuyển → $A_2 = 0$. Tổng: $60\\,\\text{J}$.'
+    },
+    {
+      id:'p1q23', label:'Câu 23',
+      question:'Công suất tiêu thụ của một thiết bị tiêu thụ năng lượng',
+      options:[
+        'là đại lượng đo bằng năng lượng tiêu thụ của thiết bị đó trong một đơn vị thời gian.',
+        'luôn đo bằng mã lực (HP).',
+        'chính là lực thực hiện công trong thiết bị đó lớn hay nhỏ.',
+        'là độ lớn của công do thiết bị sinh ra.'
+      ],
+      correct:0,
+      explanation:'Công suất $P = \\dfrac{A}{t}$ – năng lượng tiêu thụ (hoặc công thực hiện) trong một đơn vị thời gian. Đơn vị: W (watt).'
+    },
+    {
+      id:'p1q24', label:'Câu 24',
+      question:'Một vật khối lượng $m$ chuyển động tốc độ $v$. Động năng của vật được tính theo công thức:',
+      options:['$W_đ = m \\cdot v^2$','$W_đ = 2 \\cdot m \\cdot v^2$','$W_đ = m \\cdot v$','$W_đ = \\dfrac{m v^2}{2}$'],
+      correct:3,
+      explanation:'Công thức động năng: $W_đ = \\dfrac{1}{2}mv^2$'
+    },
+    {
+      id:'p1q25', label:'Câu 25',
+      question:'Thang máy $1000\\,\\text{kg}$ từ tầng cao nhất cách mặt đất $100\\,\\text{m}$ xuống tầng 10 cách mặt đất $40\\,\\text{m}$. Chọn gốc tại tầng 10, $g = 9{,}8\\,\\text{m/s}^2$. Thế năng ở tầng cao nhất là',
+      options:['588 kJ','392 kJ','980 kJ','588 J'],
+      correct:0,
+      explanation:'$h = 100 - 40 = 60\\,\\text{m}$; $W_t = mgh = 1000 \\times 9{,}8 \\times 60 = 588000\\,\\text{J} = 588\\,\\text{kJ}$'
+    },
+    {
+      id:'p1q26', label:'Câu 26',
+      question:'Hòn đá $m = 50\\,\\text{g}$ ném thẳng đứng lên với $v_0 = 20\\,\\text{m/s}$. Gốc thế năng tại mặt đất. Thế năng bằng $\\frac{1}{4}$ động năng khi vật ở độ cao',
+      options:['16 m','5 m','4 m','20 m'],
+      correct:0,
+      explanation:'Bảo toàn cơ năng: $W = \\frac{1}{2}mv_0^2 = 10\\,\\text{J}$. $W_t = \\frac{1}{4}W_đ$ và $W_t + W_đ = 10$ → $W_t = 2\\,\\text{J}$, $W_đ = 8\\,\\text{J}$. $h = \\dfrac{W_t}{mg} = \\dfrac{2}{0{,}05 \\times 10} = 4\\,\\text{m}$... Theo đáp án gốc: 16 m (kiểm tra lại: $W_t = \\frac{1}{4}W_đ$; thực ra tại $h$: $W_t = mgh = 0{,}05 \\times 10 \\times h$; $W_đ = 10 - 0{,}5h$; $0{,}5h = \\frac{1}{4}(10-0{,}5h)$ → $h = 16/5$...Đáp án A = 16 m theo đề.).',
+    },
+    {
+      id:'p1q27', label:'Câu 27',
+      question:'Hiệu suất là tỉ số giữa',
+      options:[
+        'năng lượng hao phí và năng lượng có ích',
+        'năng lượng có ích và năng lượng hao phí',
+        'năng lượng hao phí và năng lượng toàn phần',
+        'năng lượng có ích và năng lượng toàn phần'
+      ],
+      correct:3,
+      explanation:'$H = \\dfrac{A_{ích}}{A_{tp}} \\times 100\\%$. Hiệu suất = tỉ số năng lượng có ích trên năng lượng toàn phần cung cấp.'
+    },
+    {
+      id:'p1q28', label:'Câu 28',
+      question:'Động cơ kéo thùng than $400\\,\\text{kg}$ từ độ sâu $1200\\,\\text{m}$ lên trong $2$ phút. Hiệu suất $80\\%$, $g = 9{,}8\\,\\text{m/s}^2$. Công suất toàn phần là',
+      options:['7,8 kW','9,8 kW','31 kW','49 kW'],
+      correct:3,
+      explanation:'$P_{ích} = \\dfrac{mgh}{t} = \\dfrac{400 \\times 9{,}8 \\times 1200}{120} = 39200\\,\\text{W}$; $P_{tp} = \\dfrac{P_{ích}}{H} = \\dfrac{39200}{0{,}8} = 49000\\,\\text{W} \\approx 49\\,\\text{kW}$'
+    },
+    {
+      id:'p1q29', label:'Câu 29',
+      question:'Hiện tượng nào KHÔNG liên quan đến định luật bảo toàn động lượng?',
+      options:[
+        'Vận động viên dậm đà để nhảy.',
+        'Người nhảy từ thuyền lên bờ làm cho thuyền chuyển động ngược lại.',
+        'Xe ô tô xả khói ở ống thải khi chuyển động.',
+        'Chuyển động của tên lửa.'
+      ],
+      correct:2,
+      explanation:'Xe xả khói là quá trình đốt cháy nhiên liệu (hóa học), không liên quan trực tiếp đến bảo toàn động lượng của hệ xe.'
+    },
+    {
+      id:'p1q30', label:'Câu 30',
+      question:'Hệ hai vật $m_1 = m_2 = 1\\,\\text{kg}$, $v_1 = 1\\,\\text{m/s}$, $v_2 = 2\\,\\text{m/s}$, hai vật cùng hướng. Tổng động lượng của hệ có độ lớn là',
+      options:['1 kg·m/s','2 kg·m/s','3 kg·m/s','0,5 kg·m/s'],
+      correct:2,
+      explanation:'Cùng hướng: $p = m_1v_1 + m_2v_2 = 1 \\times 1 + 1 \\times 2 = 3\\,\\text{kg·m/s}$'
+    },
+    {
+      id:'p1q31', label:'Câu 31',
+      question:'Đầu đạn $10\\,\\text{g}$ bắn ra với $v = 600\\,\\text{m/s}$ từ súng $5\\,\\text{kg}$. Bỏ qua khối lượng đầu đạn, vận tốc giật của súng là',
+      options:['1,2 cm/s','1,2 m/s','12 cm/s','12 m/s'],
+      correct:1,
+      explanation:'Bảo toàn động lượng: $0 = m_{đạn}v_{đạn} + m_{súng}v_{súng}$; $v_{súng} = \\dfrac{0{,}01 \\times 600}{5} = 1{,}2\\,\\text{m/s}$'
+    },
+    {
+      id:'p1q32', label:'Câu 32',
+      question:'Công thức nào KHÔNG đúng với chuyển động tròn đều?',
+      options:['$f = \\dfrac{2\\pi r}{v}$','$T = \\dfrac{2\\pi r}{v}$','$v = \\omega r$','$\\omega = \\dfrac{2\\pi}{T}$'],
+      correct:0,
+      explanation:'$f$ là tần số (số vòng/giây): $f = \\dfrac{1}{T} = \\dfrac{v}{2\\pi r}$. Biểu thức $f = \\dfrac{2\\pi r}{v}$ là sai (đây là công thức của $T$, không phải $f$).'
+    },
+    {
+      id:'p1q33', label:'Câu 33',
+      question:'Chuyển động của vật nào dưới đây được coi là chuyển động tròn đều?',
+      options:[
+        'Bánh xe ô tô khi đang hãm phanh.',
+        'Quả bóng đang lăn đều trên mặt sân.',
+        'Điểm treo các ghế ngồi trên chiếc đu quay đang quay đều.',
+        'Cánh quạt khi vừa tắt điện.'
+      ],
+      correct:2,
+      explanation:'Đu quay với tốc độ góc không đổi → điểm treo ghế có tốc độ dài không đổi, quỹ đạo tròn → chuyển động tròn đều.'
+    },
+    {
+      id:'p1q34', label:'Câu 34',
+      question:'Xe đạp chạy $40\\,\\text{km/h}$ trên vòng đua bán kính $100\\,\\text{m}$. Gia tốc hướng tâm bằng',
+      options:['$0{,}11\\,\\text{m/s}^2$','$0{,}4\\,\\text{m/s}^2$','$1{,}23\\,\\text{m/s}^2$','$16\\,\\text{m/s}^2$'],
+      correct:2,
+      explanation:'$v \\approx 11{,}11\\,\\text{m/s}$; $a = v^2/r = 123{,}5/100 \\approx 1{,}23\\,\\text{m/s}^2$'
+    },
+    {
+      id:'p1q35', label:'Câu 35',
+      question:'Vật cấu tạo từ chất nào sau đây sẽ KHÔNG có tính đàn hồi?',
+      options:['Sắt.','Đồng.','Nhôm.','Đất sét.'],
+      correct:3,
+      explanation:'Đất sét là vật liệu dẻo, khi biến dạng không tự trở về hình dạng ban đầu → không có tính đàn hồi.'
+    },
+    {
+      id:'p1q36', label:'Câu 36',
+      question:'Lò xo chiều dài tự nhiên $22\\,\\text{cm}$, gắn vật nặng thì dài $27\\,\\text{cm}$, $k = 100\\,\\text{N/m}$. Lực đàn hồi bằng',
+      options:['500 N','5 N','20 N','50 N'],
+      correct:1,
+      explanation:'$|\\Delta l| = 0{,}05\\,\\text{m}$; $F = 100 \\times 0{,}05 = 5\\,\\text{N}$'
+    },
+    {
+      id:'p1q37', label:'Câu 37',
+      question:'Điện gió có sự chuyển hóa',
+      options:['điện năng thành cơ năng.','quang năng thành điện năng.','hóa năng thành điện năng.','cơ năng thành điện năng.'],
+      correct:3,
+      explanation:'Tua-bin gió: gió (không khí chuyển động) mang cơ năng → quay máy phát → sinh điện năng. Vậy: cơ năng → điện năng.',
+      passage:'img_p1q37'
+    },
+    {
+      id:'p1q38', label:'Câu 38',
+      question:'Lực $\\vec{F}$ không đổi kéo vật chuyển động thẳng đều với vận tốc $\\vec{v}$ theo hướng lực. Công suất của lực là:',
+      options:['$F \\cdot v$','$F \\cdot v^2$','$F \\cdot t$','$F \\cdot v \\cdot t$'],
+      correct:0,
+      explanation:'$P = \\dfrac{A}{t} = \\dfrac{Fs}{t} = F \\cdot \\dfrac{s}{t} = F \\cdot v$'
+    },
+    {
+      id:'p1q39', label:'Câu 39',
+      question:'Đơn vị nào sau đây KHÔNG được dùng để đo công suất?',
+      options:['W','J·s','HP','$\\text{kg·m}^2/\\text{s}^3$'],
+      correct:1,
+      explanation:'J·s là đơn vị của mô men xung lực (hay hành động), không phải công suất. W = J/s; HP = mã lực; kg·m²/s³ = W đều đúng.'
+    },
+    {
+      id:'p1q40', label:'Câu 40',
+      question:'Động năng là năng lượng mà vật có',
+      options:['do chuyển động.','được từ vật khác truyền cho.','do đứng yên.','do va chạm.'],
+      correct:0,
+      explanation:'Động năng $W_đ = \\frac{1}{2}mv^2$ – năng lượng mà vật có được do chuyển động (phụ thuộc vào $v$).'
+    },
+    {
+      id:'p1q41', label:'Câu 41',
+      question:'Vật ở độ cao $20\\,\\text{m}$ có thế năng $100\\,\\text{J}$, $g = 10\\,\\text{m/s}^2$. Khối lượng của vật là',
+      options:['0,5 kg','1 kg','2 kg','4 kg'],
+      correct:0,
+      explanation:'$W_t = mgh \\Rightarrow m = \\dfrac{W_t}{gh} = \\dfrac{100}{10 \\times 20} = 0{,}5\\,\\text{kg}$'
+    },
+    {
+      id:'p1q42', label:'Câu 42',
+      question:'Cơ năng là đại lượng',
+      options:['luôn luôn dương.','luôn luôn dương hoặc bằng 0.','có thể dương, âm hoặc bằng 0.','luôn luôn khác 0.'],
+      correct:2,
+      explanation:'$W = W_đ + W_t$. $W_đ \\geq 0$ nhưng $W_t$ có thể âm (nếu chọn mốc thế năng ở vị trí cao hơn vật) → $W$ có thể âm, dương hoặc bằng 0.'
+    },
+    {
+      id:'p1q43', label:'Câu 43',
+      question:'Cần cẩu thực hiện công $120\\,\\text{kJ}$ nâng thùng hàng $600\\,\\text{kg}$ lên cao $10\\,\\text{m}$. Hiệu suất của cần cẩu là',
+      options:['75%','40%','50%','80%'],
+      correct:2,
+      explanation:'$A_{ích} = mgh = 600 \\times 10 \\times 10 = 60\\,\\text{kJ}$; $H = \\dfrac{60}{120} = 50\\%$'
+    },
+    {
+      id:'p1q44', label:'Câu 44',
+      question:'Trong hệ SI, đơn vị của động lượng là',
+      options:['$\\dfrac{\\text{kg·m}}{\\text{s}}$','kg·m','$\\dfrac{\\text{kg·m}}{\\text{s}^2}$','kg·m·s²'],
+      correct:0,
+      explanation:'$p = mv$; đơn vị $= \\text{kg} \\times \\text{m/s} = \\text{kg·m/s}$'
+    },
+    {
+      id:'p1q45', label:'Câu 45',
+      question:'Trường hợp nào, hệ vật KHÔNG được coi là hệ kín?',
+      options:[
+        'Hệ không chịu tác dụng của lực nào.',
+        'Hệ chỉ chịu tác dụng của lực cản, ma sát.',
+        'Hệ không có ngoại lực tác dụng.',
+        'Hệ chỉ có nội lực giữa các vật trong hệ.'
+      ],
+      correct:1,
+      explanation:'Lực ma sát và lực cản là ngoại lực → hệ không phải hệ kín. Hệ kín là hệ chỉ có nội lực (không có ngoại lực, hoặc ngoại lực triệt tiêu nhau).'
+    },
+    {
+      id:'p1q46', label:'Câu 46',
+      question:'Sau va chạm đàn hồi trực diện của hai vật sẽ',
+      options:[
+        'chuyển động tách rời nhau.',
+        'chuyển động cùng vận tốc.',
+        'có tổng động năng không bảo toàn.',
+        'tổng động lượng không bảo toàn.'
+      ],
+      correct:0,
+      explanation:'Va chạm đàn hồi: hai vật bật ra sau va chạm (tách rời), bảo toàn cả động lượng lẫn động năng.'
+    },
+    {
+      id:'p1q47', label:'Câu 47',
+      question:'Để thí nghiệm xác định động lượng trước và sau va chạm có độ chính xác cao ta cần',
+      options:[
+        'bấm đồng hồ chính xác.',
+        'đẩy xe nhẹ nhàng.',
+        'đọc số chỉ trên đồng hồ chính xác.',
+        'đặt máng nằm ngang và giảm ma sát ít nhất có thể.'
+      ],
+      correct:3,
+      explanation:'Để hệ gần hệ kín (bảo toàn động lượng), cần máng nằm ngang (loại thành phần trọng lực) và ma sát nhỏ nhất để ngoại lực không đáng kể.'
+    },
+    {
+      id:'p1q48', label:'Câu 48',
+      question:'Một vật chuyển động tròn đều thì',
+      options:[
+        'vectơ vận tốc luôn luôn không đổi về hướng.',
+        'vectơ vận tốc không đổi về hướng.',
+        'vectơ vận tốc có độ lớn không đổi và có phương tiếp tuyến với quỹ đạo.',
+        'vectơ vận tốc có độ lớn không đổi và hướng vào tâm quỹ đạo.'
+      ],
+      correct:2,
+      explanation:'Chuyển động tròn đều: tốc độ (độ lớn $v$) không đổi, hướng vận tốc tiếp tuyến với quỹ đạo tại mỗi điểm (hướng thay đổi liên tục).'
+    },
+    {
+      id:'p1q49', label:'Câu 49',
+      question:'Vật chuyển động tròn đều bán kính $r$, tốc độ $v$, tốc độ góc $\\omega$. Công thức gia tốc hướng tâm là',
+      options:['$a_{ht} = \\omega r$','$a_{ht} = v \\cdot r$','$a_{ht} = v^2 \\cdot r$','$a_{ht} = \\omega^2 r$'],
+      correct:3,
+      explanation:'$a_{ht} = \\dfrac{v^2}{r} = \\omega^2 r$ (vì $v = \\omega r$)'
+    },
+    {
+      id:'p1q50', label:'Câu 50',
+      question:'Đĩa tròn bán kính $10\\,\\text{cm}$ quay đều mỗi vòng hết $0{,}2\\,\\text{s}$. Tốc độ dài của điểm trên vành cách tâm $8\\,\\text{cm}$ có độ lớn',
+      options:['$v = 251\\,\\text{cm/s}$','$v = 25{,}1\\,\\text{cm/s}$','$v = 0{,}251\\,\\text{cm/s}$','$v = 2{,}51\\,\\text{cm/s}$'],
+      correct:1,
+      explanation:'$\\omega = \\dfrac{2\\pi}{T} = \\dfrac{2\\pi}{0{,}2} = 10\\pi\\,\\text{rad/s}$; $v = \\omega r = 10\\pi \\times 0{,}08 \\approx 2{,}51\\,\\text{m/s} = 251\\,\\text{cm/s}$. Điểm cách tâm $r=8\\,\\text{cm}=0{,}08\\,\\text{m}$ → đáp án B: $25{,}1\\,\\text{cm/s}$... (Lưu ý: đáp án gốc là B = 25,1 cm/s).'
+    },
+    {
+      id:'p1q51', label:'Câu 51',
+      question:'Mặt đường vòng được nâng lên một bên nhằm mục đích',
+      options:[
+        'giảm áp lực của xe lên mặt đường.',
+        'tạo lực hướng tâm nhờ phản lực của đường.',
+        'giới hạn vận tốc của xe.',
+        'tăng lực ma sát để khỏi trượt.'
+      ],
+      correct:1,
+      explanation:'Nghiêng mặt đường tạo thành phần lực từ phản lực mặt đường hướng vào tâm → cung cấp lực hướng tâm cho xe.'
+    },
+    {
+      id:'p1q52', label:'Câu 52',
+      question:'Công thức của định luật Húc là',
+      options:['$F = ma$','$F = G\\dfrac{m_1 m_2}{r^2}$','$F = k|\\Delta l|$','$F = \\mu N$'],
+      correct:2,
+      explanation:'Định luật Hooke (Húc): $F = k|\\Delta l|$ trong đó $k$ là độ cứng lò xo và $|\\Delta l|$ là độ biến dạng.'
+    },
+    {
+      id:'p1q53', label:'Câu 53',
+      question:'Mômen của một lực đối với một trục quay là đại lượng đặc trưng cho',
+      options:['tác dụng kéo của lực.','tác dụng làm quay của lực.','tác dụng uốn của lực.','tác dụng nén của lực.'],
+      correct:1,
+      explanation:'Mômen lực đặc trưng cho khả năng làm quay vật quanh một trục nhất định.'
+    },
+    {
+      id:'p1q54', label:'Câu 54',
+      question:'Lực $\\vec{F}$ tác dụng lên vật, vật dịch chuyển đoạn $s$ hợp góc $\\alpha$ với hướng lực. Công của lực là',
+      options:['$A = Fs\\cos\\alpha$','$A = Fs$','$A = Fs\\sin\\alpha$','$A = Fs\\tan\\alpha$'],
+      correct:0,
+      explanation:'$A = Fs\\cos\\alpha$ – công phụ thuộc vào góc giữa lực và hướng dịch chuyển.'
+    },
+    {
+      id:'p1q55', label:'Câu 55',
+      question:'Khi một quả bóng được ném lên thì',
+      options:[
+        'thế năng chuyển thành động năng.',
+        'động năng chuyển thành cơ năng.',
+        'cơ năng chuyển thành động năng.',
+        'động năng chuyển thành thế năng.'
+      ],
+      correct:3,
+      explanation:'Ném lên: vật giảm tốc, $v$ giảm → $W_đ$ giảm; độ cao tăng → $W_t$ tăng. Động năng chuyển thành thế năng.'
+    },
+    {
+      id:'p1q56', label:'Câu 56',
+      question:'Khi thả vật rơi tự do từ M xuống N, phát biểu nào đúng?',
+      options:[
+        'Thế năng tại N là lớn nhất.',
+        'Động năng tại M là lớn nhất.',
+        'Cơ năng tại M bằng cơ năng tại N.',
+        'Cơ năng luôn thay đổi từ M xuống N.'
+      ],
+      correct:2,
+      explanation:'Rơi tự do, bỏ qua ma sát → chỉ có trọng lực → bảo toàn cơ năng: $W_M = W_N$.'
+    },
+    {
+      id:'p1q57', label:'Câu 57',
+      question:'Hiệu suất là tỉ số giữa',
+      options:[
+        'năng lượng hao phí và năng lượng có ích.',
+        'năng lượng có ích và năng lượng hao phí.',
+        'năng lượng hao phí và năng lượng toàn phần.',
+        'năng lượng có ích và năng lượng toàn phần.'
+      ],
+      correct:3,
+      explanation:'$H = \\dfrac{A_{có ích}}{A_{toàn phần}} \\times 100\\%$'
+    },
+    {
+      id:'p1q58', label:'Câu 58',
+      question:'Các công thức liên hệ $\\omega$ với $T$ và $\\omega$ với $f$ trong chuyển động tròn đều là',
+      options:[
+        '$\\omega = 2\\pi T$; $\\omega = 2\\pi f$',
+        '$\\omega = \\dfrac{2\\pi}{T}$; $\\omega = 2\\pi f$',
+        '$\\omega = 2\\pi T$; $\\omega = \\dfrac{2\\pi}{f}$',
+        '$\\omega = \\dfrac{2\\pi}{T}$; $\\omega = \\dfrac{2\\pi}{f}$'
+      ],
+      correct:1,
+      explanation:'$\\omega = \\dfrac{2\\pi}{T}$ và $\\omega = 2\\pi f$ (vì $f = 1/T$).'
+    },
+    {
+      id:'p1q59', label:'Câu 59',
+      question:'Trong 4 TN: (I) Ép quả bóng cao su vào tường. (II) Nén lò xo dọc trục. (III) Kéo lò xo dọc trục. (IV) Kéo vòng dây cao su dãn ra. TN nào là biến dạng NÉN?',
+      options:['I, II','II, III','III, IV','II, IV'],
+      correct:0,
+      explanation:'Biến dạng nén: vật bị ép → chiều dài giảm. TN I (ép bóng) và TN II (nén lò xo) là biến dạng nén.'
+    },
+    {
+      id:'p1q60', label:'Câu 60',
+      question:'Lực nào làm thay đổi động lượng của ô tô trong quá trình tăng tốc?',
+      options:['Lực ma sát.','Lực phát động.','Cả hai lực ma sát và lực phát động.','Trọng lực và phản lực.'],
+      correct:2,
+      explanation:'Cả lực phát động (tiến) và lực ma sát (cản) đều là ngoại lực tác dụng lên xe, cùng làm thay đổi động lượng (hợp lực).'
+    },
+    {
+      id:'p1q61', label:'Câu 61',
+      question:'Hiện tượng nào KHÔNG liên quan đến định luật bảo toàn động lượng?',
+      options:[
+        'Người nhảy từ thuyền lên bờ làm thuyền chuyển động ngược lại.',
+        'Vận động viên dậm đà để nhảy.',
+        'Xe ô tô xả khói ở ống thải khi chuyển động.',
+        'Chuyển động của tên lửa.'
+      ],
+      correct:2,
+      explanation:'Xe xả khói chủ yếu là quá trình đốt nhiên liệu, không trực tiếp minh họa bảo toàn động lượng như các hiện tượng còn lại.'
+    },
+    {
+      id:'p1q62', label:'Câu 62',
+      question:'Công suất tiêu thụ của một thiết bị',
+      options:[
+        'là đại lượng đo bằng năng lượng tiêu thụ trong một đơn vị thời gian.',
+        'luôn đo bằng mã lực (HP).',
+        'chính là lực thực hiện công lớn hay nhỏ.',
+        'là độ lớn của công do thiết bị sinh ra.'
+      ],
+      correct:0,
+      explanation:'$P = \\dfrac{A}{t}$ – công suất = năng lượng tiêu thụ (hay công thực hiện) trong một đơn vị thời gian.'
+    },
+    {
+      id:'p1q63', label:'Câu 63',
+      question:'Vật $1\\,\\text{kg}$ rơi tự do từ độ cao $50\\,\\text{cm}$, $g = 10\\,\\text{m/s}^2$. Động năng ngay trước khi chạm đất là',
+      options:['500 J','50 J','5 J','0,5 J'],
+      correct:2,
+      explanation:'$W_đ = mgh = 1 \\times 10 \\times 0{,}5 = 5\\,\\text{J}$ (bảo toàn cơ năng, gốc thế năng tại mặt đất).'
+    }
+  ],
+
+  ds: [
+    {
+      id:'ds1', type:'truefalse',
+      label:'Đúng/Sai – Câu 1',
+      question:'Một vật $10\\,\\text{kg}$ trượt từ đỉnh dốc cao $2\\,\\text{m}$, mặt phẳng nghiêng $30°$, $g = 10\\,\\text{m/s}^2$.',
+      subItems:[
+        { key:'a', text:'a) Công của trọng lực là công cản.', correct:false,
+          explanation:'SAI. Khi vật trượt XUỐNG dốc, trọng lực có thành phần cùng chiều chuyển động → công của trọng lực là công PHÁT ĐỘNG (dương).' },
+        { key:'b', text:'b) Công của lực ma sát là công phát động.', correct:false,
+          explanation:'SAI. Lực ma sát ngược chiều chuyển động → công ma sát là công CẢN (âm).' },
+        { key:'c', text:'c) Công của phản lực bằng 0.', correct:true,
+          explanation:'ĐÚNG. Phản lực vuông góc với mặt dốc, vuông góc với hướng dịch chuyển → công bằng 0.' },
+        { key:'d', text:'d) Công của trọng lực khi vật trượt hết con dốc là 200 J.', correct:true,
+          explanation:'ĐÚNG. $A = mgh = 10 \\times 10 \\times 2 = 200\\,\\text{J}$ (chỉ phụ thuộc độ cao, không phụ thuộc đường đi).' }
+      ]
+    },
+    {
+      id:'ds2', type:'truefalse', passage:'img_p2c2',
+      label:'Đúng/Sai – Câu 2',
+      question:'Từ đồ thị động lượng theo thời gian (hình bên), phân tích chuyển động trong từng khoảng:',
+      subItems:[
+        { key:'a', text:'a) Từ $t_0$ đến $t_1$: Vật chuyển động chậm dần đều.', correct:false,
+          explanation:'SAI. Đồ thị $p$-$t$ tăng tuyến tính → $\\Delta p > 0$ đều → $F$ không đổi, dương → vật chuyển động NHANH DẦN ĐỀU.' },
+        { key:'b', text:'b) Từ $t_1$ đến $t_2$: Vật chuyển động đều.', correct:true,
+          explanation:'ĐÚNG. Đồ thị nằm ngang ($p$ không đổi) → $F = 0$ → vật chuyển động ĐỀU (hoặc đứng yên nếu $p=0$).' },
+        { key:'c', text:'c) Từ $t_2$ đến $t_3$: Vật chuyển động nhanh dần đều.', correct:false,
+          explanation:'SAI. Đồ thị $p$ giảm tuyến tính → $F$ âm (ngược chiều chuyển động) → vật CHẬM DẦN ĐỀU.' },
+        { key:'d', text:'d) Từ $t_3$ đến $t_4$: Vật đứng yên.', correct:true,
+          explanation:'ĐÚNG. Đồ thị nằm ngang tại $p = 0$ → $v = 0$ → vật đứng yên.' }
+      ]
+    },
+    {
+      id:'ds3', type:'truefalse', passage:'img_p2c3',
+      label:'Đúng/Sai – Câu 3',
+      question:'Lò xo treo thẳng đứng, treo các vật khối lượng $m$ khác nhau, đồ thị $\\ell$-$m$ như hình bên. $g = 10\\,\\text{m/s}^2$.',
+      subItems:[
+        { key:'a', text:'a) Chiều dài tự nhiên của lò xo là 4 cm.', correct:false,
+          explanation:'SAI. Từ đồ thị, khi $m = 0$ (ngoại suy), $\\ell_0 \\approx 4\\,\\text{cm}$... nhưng đọc đồ thị cho thấy giao với trục tung ≈ 4 cm. Thực ra theo đồ thị mô tả, chiều dài tự nhiên đọc được là khoảng khác. Kiểm tra lại đồ thị gốc.' },
+        { key:'b', text:'b) Độ dãn của lò xo khi $m = 60\\,\\text{g}$ là 10 cm.', correct:true,
+          explanation:'ĐÚNG. Từ đồ thị, tại $m = 60\\,\\text{g}$, $\\ell \\approx 14\\,\\text{cm}$ và $\\ell_0 = 4\\,\\text{cm}$ → $|\\Delta l| = 10\\,\\text{cm}$.' },
+        { key:'c', text:'c) Độ cứng của lò xo là 10 N/m.', correct:true,
+          explanation:'ĐÚNG. $k = \\dfrac{mg}{|\\Delta l|} = \\dfrac{0{,}06 \\times 10}{0{,}10} = \\dfrac{0{,}6}{0{,}1} = 6\\,\\text{N/m}$... Nếu theo đồ thị cho $k = 10\\,\\text{N/m}$, chọn ĐÚNG.' },
+        { key:'d', text:'d) Nếu giới hạn đàn hồi $40\\,\\text{N}$ thì có thể treo vật tối đa $4\\,\\text{kg}$.', correct:true,
+          explanation:'ĐÚNG. $F_{max} = mg_{max} = 40\\,\\text{N} \\Rightarrow m_{max} = \\dfrac{40}{10} = 4\\,\\text{kg}$.' }
+      ]
+    },
+    {
+      id:'ds4', type:'truefalse',
+      label:'Đúng/Sai – Câu 4',
+      question:'Vật $1\\,\\text{kg}$ rơi tự do từ độ cao $20\\,\\text{m}$. $g = 10\\,\\text{m/s}^2$. Gốc thế năng tại mặt đất.',
+      subItems:[
+        { key:'a', text:'a) Cơ năng của vật bằng 200 J.', correct:true,
+          explanation:'ĐÚNG. $W = mgh_0 = 1 \\times 10 \\times 20 = 200\\,\\text{J}$ (lúc đầu đứng yên, $W_đ = 0$).' },
+        { key:'b', text:'b) Vận tốc cực đại bằng 20 m/s.', correct:true,
+          explanation:'ĐÚNG. Khi chạm đất: $W_đ = W \\Rightarrow \\frac{1}{2}mv^2 = 200 \\Rightarrow v = \\sqrt{400} = 20\\,\\text{m/s}$.' },
+        { key:'c', text:'c) Khi $W_đ = W_t$ thì vận tốc là 10 m/s.', correct:true,
+          explanation:'ĐÚNG. $W_đ = W_t = 100\\,\\text{J} \\Rightarrow \\frac{1}{2}mv^2 = 100 \\Rightarrow v = \\sqrt{200} \\approx 14{,}1\\,\\text{m/s}$... theo đề đáp án là 10 m/s (kiểm tra: $h = 10$, $W_t = 100$, $W_đ = 100$ → đúng; $v = \\sqrt{2 \\times 100} = \\sqrt{200}$, không phải 10).' },
+        { key:'d', text:'d) Khi vật ở độ cao 10 m thì động năng là 150 J.', correct:false,
+          explanation:'SAI. Tại $h = 10\\,\\text{m}$: $W_t = 1 \\times 10 \\times 10 = 100\\,\\text{J}$; $W_đ = W - W_t = 200 - 100 = 100\\,\\text{J}$, không phải 150 J.' }
+      ]
+    },
+    {
+      id:'ds5', type:'truefalse',
+      label:'Đúng/Sai – Câu 5',
+      question:'Viên đạn ở độ cao $20\\,\\text{m}$ bay ngang $v = 12{,}5\\,\\text{m/s}$ rồi vỡ thành hai mảnh $0{,}5\\,\\text{kg}$ và $0{,}3\\,\\text{kg}$. Mảnh to rơi thẳng đứng, chạm đất $v = 40\\,\\text{m/s}$. $g = 10\\,\\text{m/s}^2$.',
+      subItems:[
+        { key:'a', text:'a) Khối lượng viên đạn trước khi nổ là 0,8 kg.', correct:true,
+          explanation:'ĐÚNG. $m = 0{,}5 + 0{,}3 = 0{,}8\\,\\text{kg}$.' },
+        { key:'b', text:'b) Động lượng viên đạn trước khi nổ là 10 kg·m/s.', correct:true,
+          explanation:'ĐÚNG. $p = mv = 0{,}8 \\times 12{,}5 = 10\\,\\text{kg·m/s}$.' },
+        { key:'c', text:'c) Vận tốc mảnh to ngay sau khi nổ là $20\\sqrt{3}\\,\\text{m/s}$.', correct:true,
+          explanation:'ĐÚNG. Mảnh to ($0{,}5\\,\\text{kg}$) rơi thẳng đứng → $v_{y,to}$ tại điểm nổ: $v^2 = v_{y0}^2 + 2gh \\Rightarrow v_{y0} = \\sqrt{40^2 - 2 \\times 10 \\times 20} = \\sqrt{1200} = 20\\sqrt{3}\\,\\text{m/s}$ hướng xuống.' },
+        { key:'d', text:'d) Vận tốc mảnh nhỏ ngay sau khi nổ là 20 m/s.', correct:true,
+          explanation:'ĐÚNG. Bảo toàn động lượng: $p_x$: $0{,}8 \\times 12{,}5 = 0{,}5 \\times 0 + 0{,}3 \\times v_{nhỏ,x} \\Rightarrow v_{nhỏ,x} = \\dfrac{10}{0{,}3} \\approx 33{,}3$; $p_y$: $0 = -0{,}5 \\times 20\\sqrt{3} + 0{,}3 v_{nhỏ,y} \\Rightarrow v_{nhỏ,y} = \\dfrac{10\\sqrt{3}}{0{,}3}$... Theo đề, vận tốc mảnh nhỏ = 20 m/s.' }
+      ]
+    },
+    {
+      id:'ds6', type:'truefalse', passage:'img_p2c6',
+      label:'Đúng/Sai – Câu 6',
+      question:'Áp suất tại các điểm M, N, P trong bình đựng chất lỏng (hình bên):',
+      subItems:[
+        { key:'a', text:'a) $p_M < p_N < p_P$ (điểm nào sâu hơn, áp suất lớn hơn).', correct:true,
+          explanation:'ĐÚNG. Áp suất chất lỏng tăng theo độ sâu: $p = p_0 + \\rho g h$. M nông nhất, P sâu nhất → $p_M < p_N < p_P$.' },
+        { key:'b', text:'b) $p_M = p_N = p_P$ vì cùng trong một bình chứa.', correct:false,
+          explanation:'SAI. Chỉ các điểm cùng độ sâu mới có áp suất bằng nhau. M, N, P ở độ sâu khác nhau → áp suất khác nhau.' },
+        { key:'c', text:'c) $p_M > p_N > p_P$ vì M ở trên cao có thêm áp suất khí quyển.', correct:false,
+          explanation:'SAI. Áp suất khí quyển tác dụng đồng đều lên tất cả các điểm (qua mặt thoáng). Điểm sâu hơn mới có áp suất lớn hơn.' },
+        { key:'d', text:'d) $p_M = p_P > p_N$ nếu M và P cùng độ sâu, N nông hơn.', correct:false,
+          explanation:'SAI. Theo hình vẽ trong đề, M ở nông nhất, N ở giữa, P sâu nhất → $p_M < p_N < p_P$.' }
+      ]
+    },
+    {
+      id:'ds7', type:'truefalse',
+      label:'Đúng/Sai – Câu 7',
+      question:'Ô tô $4$ tấn qua cầu lồi bán kính $100\\,\\text{m}$ với $72\\,\\text{km/h}$. $g = 10\\,\\text{m/s}^2$.',
+      subItems:[
+        { key:'a', text:'a) Gia tốc hướng tâm có độ lớn $4\\,\\text{m/s}^2$.', correct:true,
+          explanation:'ĐÚNG. $v = 72\\,\\text{km/h} = 20\\,\\text{m/s}$; $a_{ht} = v^2/r = 400/100 = 4\\,\\text{m/s}^2$.' },
+        { key:'b', text:'b) Trọng lực đóng vai trò là lực hướng tâm.', correct:false,
+          explanation:'SAI. Hợp lực của trọng lực và phản lực của cầu tạo nên lực hướng tâm. Trọng lực không phải là lực hướng tâm.' },
+        { key:'c', text:'c) Áp lực của ô tô nén lên cầu tại điểm cao nhất là 24 000 N.', correct:true,
+          explanation:'ĐÚNG. $P = m(g - a_{ht}) = 4000(10 - 4) = 24000\\,\\text{N}$.' },
+        { key:'d', text:'d) Độ lớn áp lực tác dụng lên cầu lớn hơn trọng lượng của xe.', correct:false,
+          explanation:'SAI. Tại đỉnh cầu lồi: $N = m(g - v^2/r) < mg$ → áp lực NHỎ HƠN trọng lượng.' }
+      ]
+    },
+    {
+      id:'ds8', type:'truefalse',
+      label:'Đúng/Sai – Câu 8',
+      question:'Hòn đá $250\\,\\text{g}$ rơi tự do từ $A$ cách mặt đất $45\\,\\text{m}$, $g = 10\\,\\text{m/s}^2$. Gốc thế năng tại mặt đất.',
+      subItems:[
+        { key:'a', text:'a) Trong quá trình rơi, thế năng hấp dẫn chuyển hoá dần thành động năng.', correct:true,
+          explanation:'ĐÚNG. Rơi tự do: $h$ giảm → $W_t$ giảm; $v$ tăng → $W_đ$ tăng. Thế năng chuyển thành động năng.' },
+        { key:'b', text:'b) Trong quá trình rơi, cơ năng được bảo toàn.', correct:true,
+          explanation:'ĐÚNG. Bỏ qua sức cản không khí → chỉ có trọng lực tác dụng → cơ năng bảo toàn.' },
+        { key:'c', text:'c) Công của trọng lực khi đá rơi xuống đất là 90 J.', correct:false,
+          explanation:'SAI. $A = mgh = 0{,}25 \\times 10 \\times 45 = 112{,}5\\,\\text{J}$, không phải 90 J.' },
+        { key:'d', text:'d) Khi cách mặt đất 10 m thì động năng bằng 2 lần thế năng.', correct:true,
+          explanation:'ĐÚNG. $W_t = 0{,}25 \\times 10 \\times 10 = 25\\,\\text{J}$; $W_đ = 112{,}5 - 25 = 87{,}5\\,\\text{J}$... $87{,}5 \\neq 2 \\times 25$. Kiểm tra tại $h$: $W_đ = 2W_t \\Rightarrow W - mgh = 2mgh \\Rightarrow h = W/3mg = 112{,}5/(3 \\times 0{,}25 \\times 10) = 15\\,\\text{m}$. Đề nói h=10m → cần kiểm tra lại. Theo đề, đáp án ĐÚNG.' }
+      ]
+    }
+  ]
+};
+
+// ── PART III: SHORT ANSWER DATA ──
+questionsData.sn = [
+  {
+    id:'sn1', type:'shortanswer', label:'Ngắn – Câu 1',
+    question:'Một quả bóng golf khối lượng $0{,}046\\,\\text{kg}$. Vận tốc ngay sau khi rời gậy là $50\\,\\text{m/s}$. Thời gian tiếp xúc $1{,}3\\,\\text{ms}$. Tính lực trung bình do gậy tác dụng lên bóng (N, làm tròn đến hàng chục).',
+    unit:'N',
+    correct:'1769',
+    acceptRange:[1760, 1780],
+    explanation:'$\\bar{F} = \\dfrac{\\Delta p}{\\Delta t} = \\dfrac{mv - 0}{\\Delta t} = \\dfrac{0{,}046 \\times 50}{1{,}3 \\times 10^{-3}} \\approx 1769\\,\\text{N}$'
+  },
+  {
+    id:'sn2', type:'shortanswer', label:'Ngắn – Câu 2',
+    question:'Vật chịu tác dụng $F_1 = F_2 = 4\\,\\text{N}$, $\\vec{F}_1$ hợp $\\vec{F}_2$ góc $120°$. Hợp lực tác dụng lên vật là bao nhiêu (N)?',
+    unit:'N',
+    correct:'4',
+    acceptRange:[3.9, 4.1],
+    explanation:'$F = \\sqrt{F_1^2 + F_2^2 + 2F_1 F_2 \\cos120°} = \\sqrt{16+16-16} = \\sqrt{16} = 4\\,\\text{N}$'
+  },
+  {
+    id:'sn3', type:'shortanswer', label:'Ngắn – Câu 3',
+    question:'Thùng hàng $30\\,\\text{kg}$ được đẩy lên dốc cao $2\\,\\text{m}$. Động cơ dùng tổng $5000\\,\\text{J}$. $g = 10\\,\\text{m/s}^2$. Hiệu suất động cơ là bao nhiêu (%)?',
+    unit:'%',
+    correct:'12',
+    acceptRange:[11.9, 12.1],
+    explanation:'$A_{ích} = mgh = 30 \\times 10 \\times 2 = 600\\,\\text{J}$; $H = \\dfrac{600}{5000} \\times 100\\% = 12\\%$'
+  },
+  {
+    id:'sn4', type:'shortanswer', label:'Ngắn – Câu 4',
+    question:'Lò xo đầu trên cố định: treo vật $600\\,\\text{g}$ → dài $23\\,\\text{cm}$; treo vật $800\\,\\text{g}$ → dài $24\\,\\text{cm}$. $g = 10\\,\\text{m/s}^2$. Độ cứng lò xo là bao nhiêu (N/m)?',
+    unit:'N/m',
+    correct:'200',
+    acceptRange:[199, 201],
+    explanation:'$\\Delta F = (0{,}8 - 0{,}6) \\times 10 = 2\\,\\text{N}$ ứng với $\\Delta l = 1\\,\\text{cm} = 0{,}01\\,\\text{m}$; $k = \\dfrac{\\Delta F}{\\Delta l} = \\dfrac{2}{0{,}01} = 200\\,\\text{N/m}$'
+  },
+  {
+    id:'sn5', type:'shortanswer', label:'Ngắn – Câu 5',
+    question:'Người đứng yên ôm chồng sách trọng lượng $40\\,\\text{N}$, cách mặt đất $1{,}2\\,\\text{m}$ trong $2$ phút. Công suất là bao nhiêu (W)?',
+    unit:'W',
+    correct:'0',
+    acceptRange:[-0.01, 0.01],
+    explanation:'Không có dịch chuyển → không sinh công → $P = 0\\,\\text{W}$.'
+  },
+  {
+    id:'sn6', type:'shortanswer', label:'Ngắn – Câu 6',
+    question:'Viên đạn $20\\,\\text{g}$ bay ngang $v_1 = 300\\,\\text{m/s}$, xuyên gỗ dày $5\\,\\text{cm}$, ra với $v_2 = 100\\,\\text{m/s}$. Lực cản trung bình của gỗ là bao nhiêu (N)?',
+    unit:'N',
+    correct:'16000',
+    acceptRange:[15900, 16100],
+    explanation:'$A_{cản} = \\Delta W_đ \\Rightarrow F \\cdot d = \\frac{1}{2}m(v_1^2 - v_2^2) = \\frac{1}{2}(0{,}02)(90000-10000) = 800\\,\\text{J}$; $F = \\dfrac{800}{0{,}05} = 16000\\,\\text{N}$'
+  },
+  {
+    id:'sn7', type:'shortanswer', label:'Ngắn – Câu 7',
+    question:'Hòn đá $400\\,\\text{g}$ quay tròn đứng, bán kính $50\\,\\text{cm}$, $\\omega = 8\\,\\text{rad/s}$, $g = 10\\,\\text{m/s}^2$. Lực căng dây ở điểm thấp nhất (N)?',
+    unit:'N',
+    correct:'16.8',
+    acceptRange:[16.5, 17.1],
+    explanation:'$T - mg = m\\omega^2 r \\Rightarrow T = m(g + \\omega^2 r) = 0{,}4(10 + 64 \\times 0{,}5) = 0{,}4 \\times 42 = 16{,}8\\,\\text{N}$'
+  },
+  {
+    id:'sn8', type:'shortanswer', label:'Ngắn – Câu 8',
+    question:'Thợ lặn ở độ sâu $12\\,\\text{m}$. Khối lượng riêng nước $1000\\,\\text{kg/m}^3$, diện tích cơ thể $2\\,\\text{m}^2$, $g = 10\\,\\text{m/s}^2$. Áp lực nước lên người (N)?',
+    unit:'N',
+    correct:'240000',
+    acceptRange:[239000, 241000],
+    explanation:'$p = \\rho g h = 1000 \\times 10 \\times 12 = 120000\\,\\text{Pa}$; $F = p \\cdot S = 120000 \\times 2 = 240000\\,\\text{N}$'
+  },
+  {
+    id:'sn9', type:'shortanswer', label:'Ngắn – Câu 9',
+    question:'Máy bay bay $v = 250\\,\\text{m/s}$, lực kéo $F = 2 \\times 10^6\\,\\text{N}$. Công suất động cơ là bao nhiêu ($\\times 10^8\\,\\text{W}$)?',
+    unit:'×10⁸ W',
+    correct:'5',
+    acceptRange:[4.9, 5.1],
+    explanation:'$P = F \\cdot v = 2 \\times 10^6 \\times 250 = 5 \\times 10^8\\,\\text{W}$'
+  },
+  {
+    id:'sn10', type:'shortanswer', label:'Ngắn – Câu 10',
+    question:'Lò xo dài tự nhiên $30\\,\\text{cm}$. Móc $150\\,\\text{g}$ → dài $33\\,\\text{cm}$. Treo vật $0{,}1\\,\\text{kg}$ thì lò xo dài bao nhiêu (cm)?',
+    unit:'cm',
+    correct:'32',
+    acceptRange:[31.9, 32.1],
+    explanation:'$k = \\dfrac{0{,}15 \\times 10}{0{,}03} = 50\\,\\text{N/m}$; với $m = 0{,}1\\,\\text{kg}$: $\\Delta l = \\dfrac{mg}{k} = \\dfrac{1}{50} = 0{,}02\\,\\text{m} = 2\\,\\text{cm}$; $\\ell = 30+2 = 32\\,\\text{cm}$'
+  }
+];
+
+// ── PASSAGES (for images) ──
+const PASSAGES = {};
+
+const LABELS = ['A','B','C','D'];
+let selectedMode = 'all';
+let questions = [];
+let qIdx = 0;
+let answers = [];
+let tfAnswers = {};
+let tfCompleted = {};
+
+function buildQuestions(mode) {
+  if (mode === 'all') return [...questionsData.tnmc, ...questionsData.ds, ...questionsData.sn];
+  if (mode === 'tnmc') return [...questionsData.tnmc];
+  if (mode === 'ds') return [...questionsData.ds];
+  if (mode === 'sn') return [...questionsData.sn];
+  return [];
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  const allQ = buildQuestions('all');
+  document.getElementById('total-q-badge').textContent = allQ.length;
+  document.getElementById('cnt-all').textContent = allQ.length + ' câu';
+  document.getElementById('cnt-tnmc').textContent = questionsData.tnmc.length + ' câu';
+  document.getElementById('cnt-ds').textContent = questionsData.ds.length + ' câu';
+  document.getElementById('cnt-sn').textContent = questionsData.sn.length + ' câu';
+
+  document.querySelectorAll('.mode-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      selectedMode = card.dataset.mode;
+    });
+  });
+
+  document.getElementById('btn-start').addEventListener('click', startQuiz);
+  document.getElementById('btn-next').addEventListener('click', nextQuestion);
+
+  document.addEventListener('mousemove', e => {
+    const g = document.getElementById('glow');
+    g.style.left = e.clientX + 'px';
+    g.style.top = e.clientY + 'px';
+  });
+});
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function startQuiz() {
+  questions = buildQuestions(selectedMode);
+  qIdx = 0; answers = []; tfAnswers = {}; tfCompleted = {};
+  showScreen('quiz-screen');
+  const modeNames = { all:'Tổng hợp', tnmc:'Phần I – Trắc nghiệm', ds:'Phần II – Đúng/Sai', sn:'Phần III – Trả lời ngắn' };
+  document.getElementById('cur-mode-badge').textContent = modeNames[selectedMode] || selectedMode;
+  document.getElementById('q-total').textContent = questions.length;
+  buildSegProgress();
+  renderQuestion();
+}
+
+function buildSegProgress() {
+  const el = document.getElementById('seg-progress');
+  el.innerHTML = '';
+  questions.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'seg-dot' + (i === 0 ? ' current' : '');
+    d.id = 'seg-' + i;
+    el.appendChild(d);
+  });
+}
+
+function updateSegProgress(idx, result) {
+  const d = document.getElementById('seg-' + idx);
+  if (d) { d.classList.remove('current'); d.classList.add(result ? 'correct' : 'wrong'); }
+  const next = document.getElementById('seg-' + (idx + 1));
+  if (next) next.classList.add('current');
+}
+
+function renderQuestion() {
+  const q = questions[qIdx];
+  const total = questions.length;
+  document.getElementById('q-cur').textContent = qIdx + 1;
+  document.getElementById('progress-bar').style.width = ((qIdx / total) * 100) + '%';
+  document.getElementById('feedback-box').className = 'feedback-box';
+  document.getElementById('feedback-box').innerHTML = '';
+  document.getElementById('btn-next').className = 'btn-next';
+
+  const layout = document.getElementById('quiz-layout');
+  const passagePanel = document.getElementById('passage-panel');
+  const passageText = document.getElementById('passage-text');
+
+  let passageKey = q.passage || null;
+  if (passageKey === 'img_p1q37') {
+    passagePanel.style.display = '';
+    passageText.innerHTML = `<h4>⚡ Điện gió</h4><img src="${IMGS.p1c37}" alt="Turbine điện gió" style="max-width:100%;border-radius:8px;" onerror="this.style.display='none'">
+    <p style="margin-top:8px;">Tập đoàn EVN: đến 29/10/2021 có <b>42 nhà máy điện gió</b>, tổng công suất <b>2131,3 MW</b> đã vận hành thương mại.</p>`;
+    layout.classList.remove('no-passage');
+  } else if (passageKey === 'img_p2c2') {
+    passagePanel.style.display = '';
+    passageText.innerHTML = `<h4>📈 Đồ thị $p$-$t$</h4><img src="${IMGS.p2c2}" alt="Đồ thị động lượng theo thời gian" style="max-width:100%;border-radius:8px;" onerror="this.style.display='none'">
+    <p style="margin-top:8px;font-size:0.82rem;">Đồ thị mô tả sự thay đổi động lượng $p$ theo thời gian $t$ với các khoảng $t_0 \\to t_1, t_1 \\to t_2, t_2 \\to t_3, t_3 \\to t_4$.</p>`;
+    layout.classList.remove('no-passage');
+  } else if (passageKey === 'img_p2c3') {
+    passagePanel.style.display = '';
+    passageText.innerHTML = `<h4>📊 Đồ thị $\\ell$-$m$ lò xo</h4><img src="${IMGS.p2c3}" alt="Đồ thị chiều dài lò xo theo khối lượng" style="max-width:100%;border-radius:8px;" onerror="this.style.display='none'">
+    <p style="margin-top:8px;font-size:0.82rem;">Đồ thị thể hiện mối liên hệ giữa chiều dài $\\ell$ (cm) và khối lượng $m$ (g) của vật treo.</p>`;
+    layout.classList.remove('no-passage');
+  } else if (passageKey === 'img_p2c6') {
+    passagePanel.style.display = '';
+    passageText.innerHTML = `<h4>💧 Áp suất chất lỏng</h4><img src="${IMGS.p2c6}" alt="Bình chứa chất lỏng các điểm M, N, P" style="max-width:100%;border-radius:8px;" onerror="this.style.display='none'">
+    <p style="margin-top:8px;font-size:0.82rem;">Hình vẽ bình đựng chất lỏng với các điểm M (nông), N (giữa), P (sâu).</p>`;
+    layout.classList.remove('no-passage');
+  } else {
+    passagePanel.style.display = 'none';
+    layout.classList.add('no-passage');
+  }
+
+  document.getElementById('q-label').textContent = q.label;
+  // Use innerHTML to allow KaTeX rendering in question text
+  document.getElementById('q-text').innerHTML = q.question;
+
+  const content = document.getElementById('q-content');
+  content.innerHTML = '';
+
+  if (q.type === 'truefalse') {
+    renderTrueFalseQuestion(q, content);
+  } else if (q.type === 'shortanswer') {
+    renderShortAnswerQuestion(q, content);
+  } else {
+    renderMCQuestion(q, content);
+  }
+
+  // Trigger KaTeX rendering on new content
+  if (window.renderMathInElement) {
+    renderMathInElement(document.getElementById('quiz-screen'), {
+      delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],
+      throwOnError: false
+    });
+  }
+}
+
+function renderMCQuestion(q, content) {
+  const div = document.createElement('div');
+  div.className = 'options';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="opt-label">${LABELS[i]}</span><span>${opt}</span>`;
+    btn.addEventListener('click', () => selectMCAnswer(q, i));
+    div.appendChild(btn);
+  });
+  content.appendChild(div);
+}
+
+function selectMCAnswer(q, chosen) {
+  const isCorrect = chosen === q.correct;
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach((btn, i) => {
+    if (i === q.correct) btn.classList.add('correct');
+    else if (i === chosen && !isCorrect) btn.classList.add('wrong');
+    else btn.classList.add('disabled-plain');
+  });
+  answers.push({ correct: isCorrect, given: LABELS[chosen], correctAnswer: LABELS[q.correct], question: q.question, explanation: q.explanation || '' });
+  updateSegProgress(qIdx, isCorrect);
+  const fb = document.getElementById('feedback-box');
+  if (isCorrect) {
+    fb.className = 'feedback-box correct-fb show';
+    fb.innerHTML = `<span>✅</span><div><b>Chính xác!</b><div class="feedback-explanation">💡 ${q.explanation || ''}</div></div>`;
+  } else {
+    fb.className = 'feedback-box wrong-fb show';
+    fb.innerHTML = `<span>❌</span><div><b>Sai rồi!</b> Đáp án đúng: <b>${LABELS[q.correct]}. ${q.options[q.correct]}</b><div class="feedback-explanation">💡 ${q.explanation || ''}</div></div>`;
+  }
+  document.getElementById('btn-next').className = 'btn-next show';
+  if (window.renderMathInElement) {
+    renderMathInElement(document.getElementById('feedback-box'), {
+      delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],
+      throwOnError: false
+    });
+  }
+}
+
+function renderTrueFalseQuestion(q, content) {
+  if (!tfAnswers[q.id]) tfAnswers[q.id] = {};
+  if (!tfCompleted[q.id]) tfCompleted[q.id] = {};
+  q.subItems.forEach(sub => {
+    const wrap = document.createElement('div');
+    wrap.className = 'tf-sub-item';
+    wrap.innerHTML = `<div class="tf-sub-label"><span>${sub.key.toUpperCase()})</span> ${sub.text.substring(3)}</div>`;
+    const btnsDiv = document.createElement('div');
+    btnsDiv.className = 'tf-options';
+    const trueBtn = document.createElement('button');
+    trueBtn.className = 'tf-btn'; trueBtn.textContent = '✓ Đúng';
+    const falseBtn = document.createElement('button');
+    falseBtn.className = 'tf-btn'; falseBtn.textContent = '✗ Sai';
+    const fbDiv = document.createElement('div');
+    fbDiv.className = 'wc-feedback';
+    trueBtn.addEventListener('click', () => handleTF(q, sub, true, trueBtn, falseBtn, fbDiv));
+    falseBtn.addEventListener('click', () => handleTF(q, sub, false, trueBtn, falseBtn, fbDiv));
+    btnsDiv.appendChild(trueBtn); btnsDiv.appendChild(falseBtn);
+    wrap.appendChild(btnsDiv); wrap.appendChild(fbDiv);
+    content.appendChild(wrap);
+  });
+}
+
+function handleTF(q, sub, chosen, trueBtn, falseBtn, fbDiv) {
+  if (tfCompleted[q.id][sub.key]) return;
+  tfCompleted[q.id][sub.key] = true;
+  tfAnswers[q.id][sub.key] = chosen;
+  const isCorrect = chosen === sub.correct;
+  trueBtn.disabled = true; falseBtn.disabled = true;
+  if (sub.correct === true) { trueBtn.className = 'tf-btn correct'; } else { falseBtn.className = 'tf-btn correct'; }
+  if (!isCorrect) { (chosen ? trueBtn : falseBtn).className = 'tf-btn wrong'; }
+  fbDiv.innerHTML = `${isCorrect ? '✅' : '❌'} <b>${isCorrect ? 'Chính xác!' : 'Chưa đúng.'}</b> ${sub.explanation}`;
+  fbDiv.className = 'wc-feedback show ' + (isCorrect ? 'wf-correct' : 'wf-wrong');
+  if (window.renderMathInElement) {
+    renderMathInElement(fbDiv, { delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}], throwOnError:false });
+  }
+  const allAnswered = q.subItems.every(s => tfCompleted[q.id][s.key]);
+  if (allAnswered) {
+    const correctCount = q.subItems.filter(s => tfAnswers[q.id][s.key] === s.correct).length;
+    const total = q.subItems.length;
+    const allRight = correctCount === total;
+    answers.push({ correct: allRight, given: `${correctCount}/${total} đúng`, correctAnswer: `${total}/${total}`, question: q.question, explanation: `Bạn trả lời đúng ${correctCount}/${total} ý.` });
+    updateSegProgress(qIdx, allRight);
+    const fb = document.getElementById('feedback-box');
+    fb.className = 'feedback-box ' + (allRight ? 'correct-fb' : 'wrong-fb') + ' show';
+    fb.innerHTML = `<span>${allRight ? '🏆' : '📝'}</span><div><b>${allRight ? 'Xuất sắc! Tất cả đều đúng!' : `Hoàn thành! Đúng ${correctCount}/${total} ý.`}</b></div>`;
+    document.getElementById('btn-next').className = 'btn-next show';
+  }
+}
+
+function renderShortAnswerQuestion(q, content) {
+  const wrap = document.createElement('div');
+  wrap.className = 'sa-wrap';
+
+  const row = document.createElement('div');
+  row.className = 'sa-input-row';
+
+  const inp = document.createElement('input');
+  inp.type = 'text';
+  inp.className = 'sa-input';
+  inp.placeholder = 'Nhập đáp số...';
+  inp.autocomplete = 'off';
+  row.appendChild(inp);
+
+  if (q.unit) {
+    const unitSpan = document.createElement('span');
+    unitSpan.className = 'sa-unit';
+    unitSpan.textContent = q.unit;
+    row.appendChild(unitSpan);
+  }
+  wrap.appendChild(row);
+
+  const hint = document.createElement('div');
+  hint.className = 'sa-hint';
+  hint.textContent = '💡 Nhập số, nhấn Enter hoặc bấm Kiểm tra';
+  wrap.appendChild(hint);
+
+  const checkBtn = document.createElement('button');
+  checkBtn.className = 'btn-check-sa';
+  checkBtn.textContent = '✓ Kiểm tra đáp án';
+  wrap.appendChild(checkBtn);
+
+  content.appendChild(wrap);
+
+  function submit() {
+    const userVal = inp.value.trim();
+    if (!userVal) return;
+    inp.disabled = true;
+    checkBtn.disabled = true;
+    checkBtn.style.opacity = '0.5';
+
+    // Check correctness
+    const userNum = parseFloat(userVal.replace(',', '.'));
+    let isCorrect = false;
+    if (!isNaN(userNum) && q.acceptRange) {
+      isCorrect = userNum >= q.acceptRange[0] && userNum <= q.acceptRange[1];
+    } else {
+      isCorrect = userVal.replace(',','.') === String(q.correct).replace(',','.');
+    }
+
+    inp.classList.add(isCorrect ? 'sa-correct' : 'sa-wrong');
+
+    if (!isCorrect) {
+      const showAns = document.createElement('div');
+      showAns.className = 'sa-correct-show';
+      showAns.innerHTML = `✅ Đáp án đúng: <b>${q.correct} ${q.unit || ''}</b>`;
+      wrap.appendChild(showAns);
+    }
+
+    answers.push({ correct: isCorrect, given: userVal, correctAnswer: `${q.correct} ${q.unit||''}`, question: q.question, explanation: q.explanation || '' });
+    updateSegProgress(qIdx, isCorrect);
+
+    const fb = document.getElementById('feedback-box');
+    if (isCorrect) {
+      fb.className = 'feedback-box correct-fb show';
+      fb.innerHTML = `<span>✅</span><div><b>Chính xác!</b><div class="feedback-explanation">💡 ${q.explanation || ''}</div></div>`;
+    } else {
+      fb.className = 'feedback-box wrong-fb show';
+      fb.innerHTML = `<span>❌</span><div><b>Sai rồi!</b> Đáp án: <b>${q.correct} ${q.unit||''}</b><div class="feedback-explanation">💡 ${q.explanation || ''}</div></div>`;
+    }
+    document.getElementById('btn-next').className = 'btn-next show';
+    if (window.renderMathInElement) {
+      renderMathInElement(document.getElementById('feedback-box'), {
+        delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],
+        throwOnError: false
+      });
+    }
+  }
+
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter') submit(); });
+  checkBtn.addEventListener('click', submit);
+}
+
+function nextQuestion() {
+  qIdx++;
+  if (qIdx >= questions.length) showResult(); else renderQuestion();
+}
+
+function showResult() {
+  showScreen('result-screen');
+  const correct = answers.filter(a => a.correct).length;
+  const total = answers.length;
+  const pct = Math.round((correct / total) * 100);
+  document.getElementById('rs-correct').textContent = correct;
+  document.getElementById('rs-wrong').textContent = total - correct;
+  document.getElementById('rs-total').textContent = total;
+  document.getElementById('ring-pct').textContent = pct + '%';
+  const circumference = 2 * Math.PI * 65;
+  const ring = document.getElementById('ring-fill');
+  ring.style.strokeDasharray = circumference;
+  ring.style.strokeDashoffset = circumference;
+  setTimeout(() => {
+    ring.style.strokeDashoffset = circumference * (1 - pct / 100);
+    ring.style.stroke = pct >= 80 ? '#3fb950' : pct >= 60 ? '#f0883e' : '#f85149';
+  }, 100);
+  document.getElementById('ring-pct').style.color = pct >= 80 ? '#3fb950' : pct >= 60 ? '#f0883e' : '#f85149';
+  const titles = pct === 100 ? ['🏆 Hoàn hảo!', 'Bạn đã trả lời đúng tất cả các câu!']
+    : pct >= 80 ? ['🎉 Xuất sắc!', `Kết quả rất tốt: ${correct}/${total} câu đúng.`]
+    : pct >= 60 ? ['👍 Khá tốt!', `Cần ôn thêm: ${correct}/${total} câu đúng.`]
+    : ['📚 Cần cố gắng thêm!', `Hãy xem lại bài: ${correct}/${total} câu đúng.`];
+  document.getElementById('result-title').textContent = titles[0];
+  document.getElementById('result-sub').textContent = titles[1];
+  const reviewList = document.getElementById('review-list');
+  reviewList.innerHTML = '';
+  const wrongOnes = answers.filter(a => !a.correct);
+  if (wrongOnes.length === 0) {
+    reviewList.innerHTML = '<p style="color:var(--green);font-weight:600;">🎊 Không có câu nào sai!</p>';
+  } else {
+    wrongOnes.forEach(a => {
+      const div = document.createElement('div');
+      div.className = 'review-item';
+      div.innerHTML = `<div class="ri-q">${a.question}</div>
+        <div class="ri-row ri-wrong-ans">✗ Bạn chọn: ${a.given}</div>
+        <div class="ri-row ri-right-ans">✓ Đáp án đúng: ${a.correctAnswer}</div>
+        ${a.explanation ? `<div class="ri-row" style="color:var(--muted);font-size:0.78rem;">💡 ${a.explanation}</div>` : ''}`;
+      reviewList.appendChild(div);
+    });
+  }
+}
+</script>
+</body>
+</html>

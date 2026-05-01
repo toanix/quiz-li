@@ -51,7 +51,7 @@
     .progress-bar-wrap { width: 100%; height: 5px; background: var(--border); border-radius: 999px; margin-bottom: 24px; overflow: hidden; }
     .progress-bar-fill { height: 100%; background: linear-gradient(90deg,#4f8ef7,#7ab3ff); border-radius: 999px; transition: width 0.4s cubic-bezier(0.4,0,0.2,1); }
     .segment-progress { display: flex; gap: 3px; margin-bottom: 20px; flex-wrap: wrap; }
-    .seg-dot { flex: 1; min-width: 6px; max-width: 16px; height: 5px; border-radius: 999px; background: var(--border); transition: background 0.3s; }
+    .seg-dot { flex: 1; min-width: 3px; max-width: 10px; height: 5px; border-radius: 999px; background: var(--border); transition: background 0.3s; }
     .seg-dot.correct { background: var(--green); }
     .seg-dot.wrong { background: var(--red); }
     .seg-dot.current { background: var(--accent); }
@@ -1061,10 +1061,13 @@ function startQuiz() {
 function buildSegProgress() {
   const el = document.getElementById('seg-progress');
   el.innerHTML = '';
+  const total = questions.length;
+  const maxW = Math.max(3, Math.min(14, Math.floor(860 / total) - 3));
   questions.forEach((_, i) => {
     const d = document.createElement('div');
     d.className = 'seg-dot' + (i === 0 ? ' current' : '');
     d.id = 'seg-' + i;
+    d.style.maxWidth = maxW + 'px';
     el.appendChild(d);
   });
 }

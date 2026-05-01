@@ -1076,7 +1076,7 @@ function updateSegProgress(idx, result) {
   const d = document.getElementById('seg-' + idx);
   if (d) { d.classList.remove('current'); d.classList.add(result ? 'correct' : 'wrong'); }
   const next = document.getElementById('seg-' + (idx + 1));
-  if (next) next.classList.add('current');
+  if (next) next.classList.add('current');  // ← cái này ổn
 }
 
 function renderQuestion() {
@@ -1135,7 +1135,7 @@ function renderQuestion() {
 
   // Trigger KaTeX rendering on new content
   if (window.renderMathInElement) {
-    renderMathInElement(document.getElementById('quiz-screen'), {
+    renderMathInElement(document.getElementById('quiz-layout'), {
       delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],
       throwOnError: false
     });
